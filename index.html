@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>hobutwanday</title>
+<style>
+  :root { --bg: #e9c2fa; }
+  html,body { height:100%; margin:0; }
+  body { background:var(--bg); font-family: system-ui, sans-serif; }
+
+  .center { min-height:100vh; display:flex; align-items:center; justify-content:center; }
+
+  .card {
+    background: rgba(255,255,255,0.92);
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    text-align:center;
+    max-width:420px;
+    width:90%;
+  }
+
+  #confettiContainer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
+  }
+
+  .falling {
+    position: absolute;
+    top: -140px;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+    animation: fall 5s linear forwards, sway 2.2s ease-in-out infinite;
+    will-change: top, transform;
+  }
+
+  @keyframes fall {
+    0%   { top: -140px; opacity: 0; }
+    8%   { opacity: 1; }
+    100% { top: 110vh; opacity: 1; }
+  }
+
+  @keyframes sway {
+    0%   { transform: translateX(0) rotate(-8deg); }
+    50%  { transform: translateX(20px) rotate(8deg); }
+    100% { transform: translateX(0) rotate(-8deg); }
+  }
+
+  @media (max-width:420px) {
+    .falling { width:32px; height:32px; border-radius:8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="center" id="loginWrapper">
+  <div class="card" id="loginCard">
+    <h2>hello there bb very big much happy budday i love u</h2>
+    <p>enter pass pls (hint: my fav name 4 u (w/o spaces)</p>
+    <input id="pass" type="password" placeholder="password..." />
+    <div style="height:10px"></div>
+    <button id="enterBtn">enter?!/!/</button>
+    <p id="message" style="color:#9a1f7a; font-weight:600;"></p>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none; padding:22px; text-align:center;">
+  <h1>happy birthday beautiful i love u VERY muycgh ur so pretty u mean the world to me did u know that i love u very muhc and i wish 2 marry u plz let me do this i love uy beautiful give me ur number so i can talk 2 u every day i thinbk of u all day & night and i wish 2 kiss u whenever i see u but u dont let me :,( but can i kiss u now plkz i love u very much  </h1>
+  <p>click this pzlzl</p>
+  <button id="surpriseBtn">clikc me plzzz!</button>
+  <div style="margin-top:18px">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScF_LrQsxJlhuOUZP6mnJtcL4s2S5NolwRN5wMvYuNrsorPCA/viewform?usp=dialog" target="_blank" style="color:purple; font-weight:700;">plsz klick me 2!!!!!</a>
+  </div>
+</div>
+
+<div id="confettiContainer" aria-hidden="true"></div>
+
+<script>
+
+const CORRECT = "hobutwan";
+const IMAGE_LIST = [
+  "pic1.jpg", "pic2.jpg", "pic3.jpg", "pic4.jpg", "pic5.jpg",
+  "pic6.jpg", "pic7.jpg", "pic8.jpg", "pic9.jpg", "pic10.jpg",
+  "pic11.jpg", "pic12.jpg", "pic13.jpg", "pic14.jpg", "pic15.jpg",
+  "pic16.jpg", "pic17.jpg", "pic18.jpg", "pic19.jpg", "pic20.jpg",
+  "pic21.jpg", "pic22.jpg"
+];
+
+const passInput = document.getElementById('pass');
+const enterBtn  = document.getElementById('enterBtn');
+const messageP  = document.getElementById('message');
+
+enterBtn.addEventListener('click', checkPassword);
+passInput.addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
+
+function checkPassword(){
+  if(passInput.value === CORRECT){
+    document.getElementById('loginWrapper').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    messageP.textContent = '';
+  } else {
+    messageP.textContent = 'wrong password :(';
+  }
+}
+
+const confettiContainer = document.getElementById('confettiContainer');
+
+function dropOneImage(src){
+  const img = document.createElement('img');
+  img.className = 'falling';
+  img.onerror = function(){
+    const colors = ['ffd6f0','fbe6a6','d7f7e9','cfe0ff','f6d9ff'];
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    this.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+        <rect width="100%" height="100%" rx="20" fill="#${c}"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="40" fill="#6a2b6a">🎁</text>
+      </svg>`
+    );
+  };
+
+  img.src = src;
+  img.style.left = (Math.random() * 95) + 'vw';
+
+  const fallDur = (3 + Math.random()*3.2);
+  const swayDur = (1.6 + Math.random()*1.8);
+
+  img.style.animationDuration = `${fallDur}s, ${swayDur}s`;
+  img.style.animationDelay = (Math.random()*0.6) + 's';
+
+  const baseRotate = (Math.random()*30 - 15).toFixed(2);
+  const scale = (0.85 + Math.random()*0.5).toFixed(2);
+  img.style.transform = `rotate(${baseRotate}deg) scale(${scale})`;
+
+  confettiContainer.appendChild(img);
+
+  const maxRemoval = (fallDur + 0.8) * 1000;
+  setTimeout(()=> { if(img && img.remove) img.remove(); }, maxRemoval);
+}
+
+function burst(count=14){
+  for(let i=0;i<count;i++){
+    const src = IMAGE_LIST[Math.floor(Math.random()*IMAGE_LIST.length)];
+    dropOneImage(src);
+  }
+}
+
+document.getElementById('surpriseBtn').addEventListener('click', ()=>{
+  burst(18);
+  const id = setInterval(()=> burst(8), 700);
+  setTimeout(()=> clearInterval(id), 5200);
+});
+</script>
+</body>
+</html>
